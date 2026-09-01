@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI Video Generator 2026 - turn prompts into video ideas and generation requests." />
+  <title>AI Video Generator 2026</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>AI Video Generator</h1>
+        <p>2026</p>
+      </div>
+    </div>
+    <button id="themeBtn" class="ghost-btn" type="button" aria-label="Toggle theme">☾</button>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <span class="badge">Text → Video</span>
+      <h2>Turn your idea into a video prompt.</h2>
+      <p class="sub">
+        Describe the scene, choose a style and duration, then generate.
+      </p>
+    </section>
+
+    <section class="panel">
+      <form id="generatorForm">
+        <label for="prompt">Video description</label>
+        <textarea
+          id="prompt"
+          maxlength="1000"
+          placeholder="Example: A cinematic drone shot flying over green mountains at sunrise, soft mist, realistic lighting..."
+          required
+        ></textarea>
+
+        <div class="counter"><span id="charCount">0</span>/1000</div>
+
+        <div class="grid">
+          <div>
+            <label for="style">Style</label>
+            <select id="style">
+              <option value="cinematic">Cinematic</option>
+              <option value="realistic">Realistic</option>
+              <option value="anime">Anime</option>
+              <option value="3d">3D Animation</option>
+              <option value="documentary">Documentary</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="duration">Duration</label>
+            <select id="duration">
+              <option value="5">5 seconds</option>
+              <option value="10">10 seconds</option>
+              <option value="15">15 seconds</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="ratio">Aspect ratio</label>
+            <select id="ratio">
+              <option value="16:9">16:9 — YouTube</option>
+              <option value="9:16">9:16 — Shorts / Reels</option>
+              <option value="1:1">1:1 — Square</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="generateBtn" class="primary-btn" type="submit">
+          <span id="btnText">Generate Video</span>
+          <span id="spinner" class="spinner hidden" aria-hidden="true"></span>
+        </button>
+      </form>
+    </section>
+
+    <section id="resultCard" class="panel result hidden">
+      <div class="result-head">
+        <h3>Generation request ready</h3>
+        <span id="statusBadge" class="status">Ready</span>
+      </div>
+
+      <div class="preview">
+        <div class="play">▶</div>
+        <p id="previewText">Your video preview will appear here.</p>
+      </div>
+
+      <div class="request-box">
+        <strong>Prompt sent:</strong>
+        <p id="resultPrompt"></p>
+      </div>
+    </section>
+
+    <section class="note">
+      <strong>Important:</strong>
+      This GitHub version is the website front end. To create real AI videos,
+      connect <code>script.js</code> to a video-generation API through a secure backend.
+      Never place a secret API key directly in browser JavaScript.
+    </section>
+  </main>
+
+  <footer>
+    <p>AI Video Generator 2026</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
