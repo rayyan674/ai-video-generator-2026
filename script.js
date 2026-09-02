@@ -9,13 +9,16 @@ const resultPrompt = document.getElementById("resultPrompt");
 const previewText = document.getElementById("previewText");
 const themeBtn = document.getElementById("themeBtn");
 
+let currentVideoUrl = null;
+
 promptInput.addEventListener("input", () => {
   charCount.textContent = promptInput.value.length;
 });
 
 themeBtn.addEventListener("click", () => {
   document.body.classList.toggle("light");
-  themeBtn.textContent = document.body.classList.contains("light") ? "☀" : "☾";
+  themeBtn.textContent =
+    document.body.classList.contains("light") ? "☀️" : "🌙";
 });
 
 form.addEventListener("submit", async (event) => {
@@ -29,22 +32,78 @@ form.addEventListener("submit", async (event) => {
   if (!prompt) return;
 
   setLoading(true);
-  await new Promise(resolve => setTimeout(resolve, 1200));
 
-  resultPrompt.textContent =
-    `${prompt} | Style: ${style} | Duration: ${duration}s | Ratio: ${ratio}`;
-
-  previewText.textContent =
-    "Website front end is working. Connect a secure AI video-generation backend for real video generation.";
-
+  previewText.textContent = "Generating your AI video...";
   resultCard.classList.remove("hidden");
-  resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  setLoading(false);
+  try {
+    const fullPrompt =
+      `${prompt}. Style: ${style}. Duration: ${duration}. Aspect ratio: ${ratio}.`;
+
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: fullPrompt
+      })
+    });
+
+    if (!response.ok) {
+      let message = "Video generation failed.";
+
+      try {
+        const errorData = await response.json();
+        if (errorData.error) message = errorData.error;
+      } catch (e) {}
+
+      throw new Error(message);
+    }
+
+    const videoBlob = await response.blob();
+
+    if (currentVideoUrl) {
+      URL.revokeObjectURL(currentVideoUrl);
+    }
+
+    currentVideoUrl = URL.createObjectURL(videoBlob);
+
+    resultPrompt.textContent =
+      `${prompt} | Style: ${style} | Duration: ${duration}s | Ratio: ${ratio}`;
+
+    previewText.textContent = "";
+
+    const video = document.createElement("video");
+    video.src = currentVideoUrl;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.style.width = "100%";
+    video.style.maxWidth = "100%";
+    video.style.borderRadius = "14px";
+
+    previewText.appendChild(video);
+
+    resultCard.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    previewText.textContent =
+      "Error: " + (error.message || "Video generation failed.");
+
+    resultCard.classList.remove("hidden");
+  } finally {
+    setLoading(false);
+  }
 });
 
 function setLoading(isLoading) {
   generateBtn.disabled = isLoading;
-  btnText.textContent = isLoading ? "Preparing..." : "Generate Video";
+  btnText.textContent = isLoading ? "Generating..." : "Generate Video";
   spinner.classList.toggle("hidden", !isLoading);
 }
